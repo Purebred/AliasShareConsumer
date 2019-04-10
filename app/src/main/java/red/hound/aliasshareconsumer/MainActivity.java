@@ -5,7 +5,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,9 +16,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "AliasShareConsumer";
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -73,8 +78,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void fetchAliases(View view)
     {
+        TextView tv = findViewById(R.id.textview);
+        fetchAliases(getApplicationContext(), tv);
+    }
+    public static void fetchAliases(Context context, TextView tv)
+    {
         try {
-            ContentResolver mContentResolver = this.getContentResolver();
+            ContentResolver mContentResolver = context.getContentResolver();
             String cpUri = "content://red.hound.aliasshareprovider/alias";
 
             // get aliases and certs
@@ -86,71 +96,78 @@ public class MainActivity extends AppCompatActivity {
             final String[] certsOnly = {"certificate"};
             final String[] typeOnly = {"type"};
 
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
+            List<String> sb = new ArrayList<>();
 
-            sb.append("\nAliases only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nAliases only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             Cursor data = mContentResolver.query(Uri.parse(cpUri), aliasesOnly, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String a = data.getString(0);
-                sb.append(a + "\n");
+                sb.add(a + "\n");
             }
 
-            sb.append("\nTypes only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nTypes only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), typeOnly, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String t = data.getString(0);
-                sb.append(t + "\n");
+                sb.add(t + "\n");
             }
 
-            sb.append("\nAliases and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nAliases and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), aliasesAndType, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String a = data.getString(0);
                 String t = data.getString(1);
-                sb.append(a + ": " + t + "\n");
+                sb.add(a + ": " + t + "\n");
             }
 
-            sb.append("\nAliases and certificates and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nAliases and certificates and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), aliasesAndCertsAndType, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String a = data.getString(0);
                 String c = data.getString(1);
                 String t = data.getString(2);
-                sb.append(a + "("+ t + "): " + c + "\n");
+                sb.add(a + "("+ t + "): " + c + "\n");
             }
 
-            sb.append("\nAliases and certificates * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nAliases and certificates * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), aliasesAndCerts, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String a = data.getString(0);
                 String c = data.getString(1);
-                sb.append(a + ": " + c + "\n");
+                sb.add(a + ": " + c + "\n");
             }
 
-            sb.append("\nCertificates and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nCertificates and types * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), certsAndType, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String c = data.getString(0);
                 String t = data.getString(1);
-                sb.append(t + ": " + c + "\n");
+                sb.add(t + ": " + c + "\n");
             }
 
-            sb.append("\nCertificates only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
+            sb.add("\nCertificates only * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\n");
             data = mContentResolver.query(Uri.parse(cpUri), certsOnly, null, null, null);
             for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
                 // do what you need with the cursor here
                 String c = data.getString(0);
-                sb.append(c + "\n");
+                sb.add(c + "\n");
             }
 
-            TextView tv = findViewById(R.id.textview);
-            tv.setText(sb.toString());
+            for(String s : sb) {
+                if(null != tv) {
+                    tv.append(s);
+                }
+                else {
+                    Log.d(TAG, s);
+                }
+            }
         }
         catch(Exception e) {
             Log.e(TAG, "Error: " + e.getMessage());

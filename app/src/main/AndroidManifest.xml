@@ -18,6 +18,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name=".PurebredBroadcastReceiver"
+            android:description="@string/app_name"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="red.hound.purebred.broadcast.RESET_INITIATED" />
+                <action android:name="red.hound.purebred.broadcast.UPDATE_COMPLETED" />
+                <action android:name="red.hound.purebred.broadcast.RECOVERY_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
