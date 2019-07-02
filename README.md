@@ -8,3 +8,5 @@ Recent versions of the Purebred Registration app feature three broadcast intents
 
 AliasShareConsumer provides sample code that illustrates usage of the content provider to obtain various combinations of information from the Purebred application. 
 
+Note, the alias sharing feature was introduced with Purebred v1.5 and later. Unofficial apks for download can be found at https://pbpki.com/pl.
+
